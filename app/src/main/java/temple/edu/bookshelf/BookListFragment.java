@@ -7,6 +7,8 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
+import android.widget.TextView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -59,6 +61,18 @@ public class BookListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_book_list, container, false);
+        ListView bkListView = (ListView) inflater.inflate(R.layout.fragment_book_list, container, false);
+        TextView authorNameTextView = new TextView(getContext());
+        TextView bookNameTextView = new TextView(getContext());
+
+        bookNameTextView.setText("Hello");
+        authorNameTextView.setText("ss");
+
+        bkListView.addView(bookNameTextView);
+        bkListView.addView(authorNameTextView);
+
+
+
+        return bkListView;
     }
 }

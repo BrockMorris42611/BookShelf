@@ -1,16 +1,17 @@
 package temple.edu.bookshelf;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 
 public class BookList {
 
-    private LinkedList<Book> Library;
+    private ArrayList<Book> Library;
     private int size;
 
     public BookList(Book[] Library) {
 
-        this.Library = new LinkedList<Book>();
+        this.Library = new ArrayList<Book>();
         this.Library.addAll(Arrays.asList(Library)); // fill linked list
 
         this.size = Library.length;
@@ -18,7 +19,7 @@ public class BookList {
     public int getSize() {
         return size;
     }
-    public LinkedList<Book> getLibrary() {
+    public ArrayList<Book> getLibrary() {
         return Library;
     }
 }

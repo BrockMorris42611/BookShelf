@@ -4,11 +4,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ListView;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
     BookList BookList;
+    bookListViewAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,8 +21,13 @@ public class MainActivity extends AppCompatActivity {
         String[] bookAuthArr = getResources().getStringArray(R.array.BookAuthors); //these two should be same size
         Book[] books = new Book[bookTitleArr.length];
 
-        for(int i = 0; i < bookTitleArr.length; i++)
+        for (int i = 0; i < bookTitleArr.length; i++)
             books[i] = new Book(bookTitleArr[i], bookAuthArr[i]);
+        BookList = new BookList(books);
 
+        adapter = new bookListViewAdapter(this, BookList.getLibrary());
+
+        ListView LV = findViewById(R.id.BL);
+        LV.setAdapter(adapter);
     }
 }
