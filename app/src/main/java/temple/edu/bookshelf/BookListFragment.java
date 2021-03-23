@@ -1,14 +1,20 @@
 package temple.edu.bookshelf;
 
+import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.sql.SQLOutput;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -17,33 +23,36 @@ import android.widget.TextView;
  */
 public class BookListFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private BookList BookListF;
+    private String key = "BookInfo";
+    private BookListFragmentInterface tester;
 
     public BookListFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment BookListFragment.
-     */
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        try {
+            tester = (BookListFragmentInterface) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString()
+                    + " must implement BookListFragmentInterface");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        tester = null;
+    }
+
     // TODO: Rename and change types and number of parameters
-    public static BookListFragment newInstance(String param1, String param2) {
+    public static BookListFragment newInstance(BookList BookListF) {
         BookListFragment fragment = new BookListFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putParcelable("BookInfo", BookListF);
         fragment.setArguments(args);
         return fragment;
     }
@@ -52,8 +61,7 @@ public class BookListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            this.BookListF = getArguments().getParcelable(key);
         }
     }
 
@@ -61,18 +69,25 @@ public class BookListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        ListView bkListView = (ListView) inflater.inflate(R.layout.fragment_book_list, container, false);
-        TextView authorNameTextView = new TextView(getContext());
-        TextView bookNameTextView = new TextView(getContext());
+        View v = inflater.inflate(R.layout.fragment_book_list, container, false);
 
-        bookNameTextView.setText("Hello");
-        authorNameTextView.setText("ss");
+        ListView lv = v.findViewById(R.id.bkListView);
 
-        bkListView.addView(bookNameTextView);
-        bkListView.addView(authorNameTextView);
+        bookListViewAdapter adapter = new bookListViewAdapter(getActivity(), BookListF.getLibrary());
+        lv.setAdapter(adapter);
 
+        getActivity().setTitle(BookListF.getLibrary().get(0).getTitle());
 
+        lv.setOnItemClickListener(new ListView.OnItemClickListener(){
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(getActivity(), BookListF.getLibrary().get(position).getAuthor() + BookListF.getLibrary().get(position).getTitle(), Toast.LENGTH_LONG).show();
+            }
+        });
 
-        return bkListView;
+        return v;
     }
+}
+interface BookListFragmentInterface{
+    public void displaySelection();
 }
