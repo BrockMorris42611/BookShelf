@@ -12,9 +12,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import java.sql.SQLOutput;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -76,18 +73,17 @@ public class BookListFragment extends Fragment {
         bookListViewAdapter adapter = new bookListViewAdapter(getActivity(), BookListF.getLibrary());
         lv.setAdapter(adapter);
 
-        getActivity().setTitle(BookListF.getLibrary().get(0).getTitle());
-
         lv.setOnItemClickListener(new ListView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getActivity(), BookListF.getLibrary().get(position).getAuthor() + BookListF.getLibrary().get(position).getTitle(), Toast.LENGTH_LONG).show();
+                tester.sendSelectionBack(position);
             }
         });
 
         return v;
     }
-}
-interface BookListFragmentInterface{
-    public void displaySelection();
+
+    public interface BookListFragmentInterface {
+        public void sendSelectionBack(int sel);
+    }
 }

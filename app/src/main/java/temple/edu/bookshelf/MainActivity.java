@@ -1,37 +1,30 @@
 package temple.edu.bookshelf;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.ListView;
-import android.widget.TextView;
 
-import java.io.FileDescriptor;
-import java.io.PrintWriter;
-import java.util.List;
-
-public class MainActivity extends AppCompatActivity implements BookListFragmentInterface {
+public class MainActivity extends AppCompatActivity implements BookListFragment.BookListFragmentInterface, BookDetailsFragment.BookDetailsFragmentInterface {
 
     BookList BookList;
+    FragmentManager fragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        setUp();
-        if(savedInstanceState==null) {
-            BookListFragment BLF = BookListFragment.newInstance(BookList);
+        fragmentManager = getSupportFragmentManager();
 
-            FragmentManager fragmentManager = getSupportFragmentManager();
+        setUp();
+        if(savedInstanceState==null) { //This is to verify that the fragment is added only once when the activity is created
+
+            BookListFragment BLF = BookListFragment.newInstance(BookList);
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.add(R.id.main_frame,BLF, "BLF")
+            fragmentTransaction
+                    .add(R.id.main_frame,BLF, "BLF")
                     .setReorderingAllowed(true)
                     .addToBackStack("ListB")
                     .commit();
@@ -49,7 +42,18 @@ public class MainActivity extends AppCompatActivity implements BookListFragmentI
     }
 
     @Override
-    public void displaySelection() {
+    public void sendSelectionBack(int sel) {
+        BookDetailsFragment BDF = BookDetailsFragment.newInstance(BookList.getLibrary().get(sel));
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction
+                .replace(R.id.main_frame, BDF, "BDF")
+                .setReorderingAllowed(true)
+                .addToBackStack("DetailB")
+                .commit();
+    }
+
+    @Override
+    public void display(Book b) {
 
     }
 }
