@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import static android.graphics.Color.RED;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link BookDetailsFragment#newInstance} factory method to
@@ -20,8 +22,8 @@ public class BookDetailsFragment extends Fragment {
 
 
     private static final String key = "Book";
-    private Book book;
-    private BookDetailsFragmentInterface tester;
+    private Book book; //the book we selected in the other fragment
+    private BookDetailsFragmentInterface tester; //here for better memory reference
 
     public BookDetailsFragment() {
         // Required empty public constructor
@@ -31,7 +33,7 @@ public class BookDetailsFragment extends Fragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         try {
-            tester = (BookDetailsFragmentInterface) context;
+            tester = (BookDetailsFragmentInterface) context; //are we working with an activity that implements our interface?
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString()
                     + " must implement BookListFragmentInterface");
@@ -41,7 +43,7 @@ public class BookDetailsFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        tester = null;
+        tester = null; //null what we set earlier
     }
 
     // TODO: Rename and change types and number of parameters
@@ -57,7 +59,7 @@ public class BookDetailsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            book = getArguments().getParcelable(key);
+            book = getArguments().getParcelable(key); //get the arguments we set in the newInstance()
         }
     }
 
@@ -67,10 +69,12 @@ public class BookDetailsFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_book_details, container, false);
 
+        v.setBackgroundColor(RED);   // I want to show the difference between the two frames
+
         TextView tvTitle = v.findViewById(R.id.BookTitleTextView);
         TextView tvAuthor = v.findViewById(R.id.BookAuthorTextView);
 
-        tvTitle.setText(book.getTitle());
+        tvTitle.setText(book.getTitle()); //given the book we selected
         tvTitle.setTextSize(50);
 
         tvAuthor.setText(book.getAuthor());
