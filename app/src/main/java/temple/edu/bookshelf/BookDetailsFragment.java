@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import static android.graphics.Color.RED;
@@ -73,6 +74,7 @@ public class BookDetailsFragment extends Fragment {
 
         TextView tvTitle = v.findViewById(R.id.BookTitleTextView);
         TextView tvAuthor = v.findViewById(R.id.BookAuthorTextView);
+        ImageView ivCover = v.findViewById(R.id.bookCoverImgView);
 
         tvTitle.setText(book.getTitle()); //given the book we selected
         tvTitle.setTextSize(50);

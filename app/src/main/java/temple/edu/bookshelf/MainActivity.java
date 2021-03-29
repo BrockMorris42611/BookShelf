@@ -6,6 +6,8 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity implements BookListFragment.BookListFragmentInterface, BookDetailsFragment.BookDetailsFragmentInterface {
 
     BookList BookList;
@@ -22,10 +24,10 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
 
         split = findViewById(R.id.detail_frame)!=null; //true when we can find the view(meaning we are in portrait) or false when we cant find the view(landscape or large)
 
+        BookList = new BookList(new Book[0]); //init to size zero
 
         fragmentManager = getSupportFragmentManager();
 
-        setUp();//helper method
         if(savedInstanceState==null) { //This is to verify that the fragment is added only once when the activity is created
 
             BLF = BookListFragment.newInstance(BookList);
@@ -47,16 +49,6 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
                         .commit();
             }
         }
-    }
-    public BookList setUp(){
-        String[] bookTitleArr = getResources().getStringArray(R.array.BookTitles);
-        String[] bookAuthArr = getResources().getStringArray(R.array.BookAuthors); //these two should be same size
-        Book[] books = new Book[bookTitleArr.length];
-
-        for (int i = 0; i < bookTitleArr.length; i++)
-            books[i] = new Book(bookTitleArr[i], bookAuthArr[i]); //populate our list
-        BookList = new BookList(books);
-        return BookList;
     }
 
     @Override
