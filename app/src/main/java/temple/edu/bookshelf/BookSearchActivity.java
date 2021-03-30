@@ -3,12 +3,79 @@ package temple.edu.bookshelf;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 public class BookSearchActivity extends AppCompatActivity {
+
+    EditText searchBox;
+    Button searchButton;
+    BookList searchedBooksFound;
+
+    RequestQueue requestQueue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_search);
+
+        searchBox    = findViewById(R.id.editTextSearch);
+        searchButton = findViewById(R.id.buttonSearch);
+        searchedBooksFound = new BookList(new ArrayList<>());
+
+        requestQueue = Volley.newRequestQueue(this);
+
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String urlstr = "https://kamorris.com/lab/cis3515/search.php?term=" + searchBox.getText().toString();
+                //We are using arrays for the ONLY purpose being that this is an array of JSONobjects
+                JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, urlstr, null, new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        for(int i = 0; i < response.length(); i++) { //we are returned an array from responses
+                            try {
+                                JSONObject holder = response.getJSONObject(i);
+                                searchedBooksFound.getLibrary()
+                                        .add(new Book(
+                                        Integer.parseInt(holder.getString("id")), //parse the array by iterating through the returned search matches
+                                        holder.getString("title"),
+                                        holder.getString("author"),
+                                        holder.getString("cover_url")));
+                                System.out.println(searchedBooksFound.toString());
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        System.out.println("ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ " + error.toString());
+                        Toast.makeText(BookSearchActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                requestQueue.add(jsonArrayRequest);
+
+            }
+        });
     }
 }

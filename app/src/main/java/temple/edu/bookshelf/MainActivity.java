@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
 
         split = findViewById(R.id.detail_frame)!=null; //true when we can find the view(meaning we are in portrait) or false when we cant find the view(landscape or large)
 
-        BookList = new BookList(new Book[0]); //init to size zero
+        BookList = new BookList(new ArrayList<>()); //init to size zero
 
         fragmentManager = getSupportFragmentManager();
 

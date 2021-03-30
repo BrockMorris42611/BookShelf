@@ -1,6 +1,7 @@
 package temple.edu.bookshelf;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -10,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -68,7 +70,7 @@ public class BookListFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_book_list, container, false);
 
-        ListView lv = v.findViewById(R.id.bkListView);
+        /*ListView lv = v.findViewById(R.id.bkListView);
 
         bookListViewAdapter adapter = new bookListViewAdapter(getActivity(), BookListF.getLibrary());
         lv.setAdapter(adapter);
@@ -78,6 +80,16 @@ public class BookListFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 tester.sendSelectionBack(position); //when the button is pressed call the activity implemented function sending
                                                     // the poition clicked back
+            }
+        });*/
+
+        Button b = v.findViewById(R.id.bbb);
+
+        b.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), BookSearchActivity.class);
+                startActivity(intent);
             }
         });
 

@@ -6,10 +6,17 @@
     android:visibility="visible"
     tools:context=".BookListFragment">
 
-    <ListView
+   <!-- <ListView
         android:id="@+id/bkListView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="visible"
-        tools:visibility="visible" />
+        tools:visibility="visible" />-->
+
+
+    <Button
+        android:id="@+id/bbb"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Button" />
 </FrameLayout>

@@ -4,29 +4,23 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
 
 public class BookList implements Parcelable {
 
     private ArrayList<Book> Library;
-    private int size;
 
-    public BookList(Book[] Library) {
+    public BookList(ArrayList<Book> Library) {
 
-        this.Library = new ArrayList<Book>();
-        this.Library.addAll(Arrays.asList(Library)); // fill linked list
-
-        this.size = Library.length;
+        this.Library = Library;
     }
 
     protected BookList(Parcel in) {
-        size = in.readInt();
+        Library = in.createTypedArrayList(Book.CREATOR);
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(size);
+        dest.writeTypedList(Library);
     }
 
     @Override
@@ -46,28 +40,28 @@ public class BookList implements Parcelable {
         }
     };
 
-    public int getSize() { return size; }
+    public int getSize() { return Library.size(); }
     public ArrayList<Book> getLibrary() { return Library; }
     public void setLibrary(ArrayList<Book> library) { Library = library; }
-    public void setSize(int size) { this.size = size; }
 
     @Override
     public String toString() {
         return "BookList{" +
-                "Library=" + Library +
-                ", size=" + size +
-                '}';
+                "Library=" + Library;
     }
 }
 class Book implements Parcelable{
+
+    private int id;
     private String title;
     private String author;
-    private int id;
     private String coverURL;
 
-    public Book(String title, String author){
+    public Book(int id, String title, String author, String coverURL){
+        this.id = id;
         this.title = title;
         this.author = author;
+        this.coverURL = coverURL;
     }
 
     protected Book(Parcel in) {
@@ -87,6 +81,8 @@ class Book implements Parcelable{
         }
     };
 
+    public int getId() { return id; }
+    public String getCoverURL() { return coverURL; }
     public String getTitle() {
         return title;
     }
@@ -99,6 +95,8 @@ class Book implements Parcelable{
     public void setAuthor(String author) {
         this.author = author;
     }
+    public void setId(int id) { this.id = id; }
+    public void setCoverURL(String coverURL) { this.coverURL = coverURL; }
 
     @Override
     public int describeContents() {
@@ -113,9 +111,9 @@ class Book implements Parcelable{
 
     @Override
     public String toString() {
-        return "Book{" +
+        return "\nBook{" +
                 "title='" + title + '\'' +
-                ", author='" + author + '\'' +
+                "\n author='" + author + '\'' +
                 '}';
     }
 }
