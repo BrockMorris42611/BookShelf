@@ -2,6 +2,7 @@ package temple.edu.bookshelf;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -59,22 +60,24 @@ public class BookSearchActivity extends AppCompatActivity {
                                         holder.getString("title"),
                                         holder.getString("author"),
                                         holder.getString("cover_url")));
-                                System.out.println(searchedBooksFound.toString());
+
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
                         }
+                        Intent retIntent = new Intent();
+                        retIntent.putExtra("BOOK_LIST", searchedBooksFound);
+                        setResult(12, retIntent);
+                        finish();
                     }
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        System.out.println("ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ " + error.toString());
-                        Toast.makeText(BookSearchActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(BookSearchActivity.this, "Unable to fulfill your request. Please try again.", Toast.LENGTH_SHORT).show();
                     }
                 });
 
                 requestQueue.add(jsonArrayRequest);
-
             }
         });
     }

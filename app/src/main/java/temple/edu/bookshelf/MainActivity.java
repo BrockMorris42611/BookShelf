@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements BookListFragment.BookListFragmentInterface, BookDetailsFragment.BookDetailsFragmentInterface {
 
-    BookList BookList;
+    BookList BookList_MainActivity;
     BookListFragment BLF;
     BookDetailsFragment BDF;
     FragmentManager fragmentManager;
@@ -24,13 +24,13 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
 
         split = findViewById(R.id.detail_frame)!=null; //true when we can find the view(meaning we are in portrait) or false when we cant find the view(landscape or large)
 
-        BookList = new BookList(new ArrayList<>()); //init to size zero
+        BookList_MainActivity = new BookList(new ArrayList<>()); //init to size zero
 
         fragmentManager = getSupportFragmentManager();
 
         if(savedInstanceState==null) { //This is to verify that the fragment is added only once when the activity is created
 
-            BLF = BookListFragment.newInstance(BookList);
+            BLF = BookListFragment.newInstance(BookList_MainActivity);
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction
                     .add(R.id.main_frame,BLF, "BLF")
@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
         } else{ //if we are operating on a savedInstance that isnt null (i.e. context switch) then pop the back stack for the name ands see if exists
             boolean pop = fragmentManager.popBackStackImmediate("BDF", FragmentManager.POP_BACK_STACK_INCLUSIVE);
             if(pop){ //if the frament type did exist then keep it but now load it into the main_fram frameview
-                BDF = BookDetailsFragment.newInstance(BookList.getLibrary().get(selectionOnResetForDetailFrag));
+                BDF = BookDetailsFragment.newInstance(BookList_MainActivity.getLibrary().get(selectionOnResetForDetailFrag));
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction
                         .add(R.id.main_frame,BDF, "BDF")
@@ -52,7 +52,8 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     }
 
     @Override
-    public void sendSelectionBack(int sel) {
+    public void sendSelectionBack(BookList BookList, int sel) {
+        BookList_MainActivity = BookList;
         selectionOnResetForDetailFrag = sel;
         if(!split) { //when we are in portrait single view
             BDF = BookDetailsFragment.newInstance(BookList.getLibrary().get(sel));

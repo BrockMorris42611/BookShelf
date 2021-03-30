@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -25,6 +26,9 @@ public class BookListFragment extends Fragment {
     private BookList BookListF; //the list we need to display
     private String key = "BookInfo";
     private BookListFragmentInterface tester;
+    int REQUEST_CODE = 1;
+    bookListViewAdapter adapter;
+    ListView lv;
 
     public BookListFragment() {
         // Required empty public constructor
@@ -70,33 +74,51 @@ public class BookListFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_book_list, container, false);
 
-        /*ListView lv = v.findViewById(R.id.bkListView);
+        lv = v.findViewById(R.id.bkListView);
 
-        bookListViewAdapter adapter = new bookListViewAdapter(getActivity(), BookListF.getLibrary());
+        adapter = new bookListViewAdapter(getActivity(), BookListF.getLibrary());
         lv.setAdapter(adapter);
 
         lv.setOnItemClickListener(new ListView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                tester.sendSelectionBack(position); //when the button is pressed call the activity implemented function sending
+                tester.sendSelectionBack(BookListF ,position); //when the button is pressed call the activity implemented function sending
                                                     // the poition clicked back
             }
-        });*/
+        });
 
-        Button b = v.findViewById(R.id.bbb);
+        Button b = v.findViewById(R.id.lookupButton);
 
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+
                 Intent intent = new Intent(getActivity(), BookSearchActivity.class);
-                startActivity(intent);
+
+                startActivityForResult(intent, REQUEST_CODE);
             }
         });
 
         return v;
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+            if (requestCode == REQUEST_CODE && resultCode == 12 && data != null) {
+                Bundle b = data.getExtras();
+                if (b.getParcelable("BOOK_LIST") != null) {
+                    BookListF = data.getParcelableExtra("BOOK_LIST");
+                    System.out.println("\n\n\nzzzzzzzzzzzz " + BookListF.toString());
+                    adapter.bookArrayList = BookListF.getLibrary();
+                    adapter.notifyDataSetChanged();
+                }else{
+                    System.out.println(data.toString());
+                }
+            }
+    }
+
     public interface BookListFragmentInterface {
-        public void sendSelectionBack(int sel); //this is the interface to be used by the function in main
+        void sendSelectionBack(BookList List,int sel); //this is the interface to be used by the function in main
     }
 }
