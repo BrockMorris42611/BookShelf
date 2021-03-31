@@ -26,7 +26,6 @@ public class BookListFragment extends Fragment {
     private BookList BookListF; //the list we need to display
     private String key = "BookInfo";
     private BookListFragmentInterface tester;
-    int REQUEST_CODE = 1;
     bookListViewAdapter adapter;
     ListView lv;
 
@@ -57,6 +56,7 @@ public class BookListFragment extends Fragment {
         Bundle args = new Bundle();
         args.putParcelable("BookInfo", BookListF); //instantiate with new BookList so we can display
         fragment.setArguments(args);
+        System.out.println("NEWINSTANCE HERE: " + BookListF.toString());
         return fragment;
     }
 
@@ -66,6 +66,14 @@ public class BookListFragment extends Fragment {
         if (getArguments() != null) {
             this.BookListF = getArguments().getParcelable(key); //retrieve instantiate data
         }
+    }
+
+    public void updateBLFrag(BookList updatedBookList){
+        BookListF = updatedBookList;
+        System.out.println("\t\t\tUPDATE: " + BookListF.toString());
+        adapter.bookArrayList = BookListF.getLibrary();
+        System.out.println("\t\t\tUPDATE IN ADAPTER: " + adapter.bookArrayList.toString());
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -87,35 +95,8 @@ public class BookListFragment extends Fragment {
             }
         });
 
-        Button b = v.findViewById(R.id.lookupButton);
-
-        b.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-
-                Intent intent = new Intent(getActivity(), BookSearchActivity.class);
-
-                startActivityForResult(intent, REQUEST_CODE);
-            }
-        });
 
         return v;
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-            if (requestCode == REQUEST_CODE && resultCode == 12 && data != null) {
-                Bundle b = data.getExtras();
-                if (b.getParcelable("BOOK_LIST") != null) {
-                    BookListF = data.getParcelableExtra("BOOK_LIST");
-                    System.out.println("\n\n\nzzzzzzzzzzzz " + BookListF.toString());
-                    adapter.bookArrayList = BookListF.getLibrary();
-                    adapter.notifyDataSetChanged();
-                }else{
-                    System.out.println(data.toString());
-                }
-            }
     }
 
     public interface BookListFragmentInterface {
