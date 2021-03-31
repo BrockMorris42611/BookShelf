@@ -70,9 +70,7 @@ public class BookListFragment extends Fragment {
 
     public void updateBLFrag(BookList updatedBookList){
         BookListF = updatedBookList;
-        System.out.println("\t\t\tUPDATE: " + BookListF.toString());
         adapter.bookArrayList = BookListF.getLibrary();
-        System.out.println("\t\t\tUPDATE IN ADAPTER: " + adapter.bookArrayList.toString());
         adapter.notifyDataSetChanged();
     }
 
@@ -90,7 +88,7 @@ public class BookListFragment extends Fragment {
         lv.setOnItemClickListener(new ListView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                tester.sendSelectionBack(BookListF ,position); //when the button is pressed call the activity implemented function sending
+                tester.sendSelectionBack(position); //when the button is pressed call the activity implemented function sending
                                                     // the poition clicked back
             }
         });
@@ -100,6 +98,6 @@ public class BookListFragment extends Fragment {
     }
 
     public interface BookListFragmentInterface {
-        void sendSelectionBack(BookList List,int sel); //this is the interface to be used by the function in main
+        void sendSelectionBack(int sel); //this is the interface to be used by the function in main
     }
 }
