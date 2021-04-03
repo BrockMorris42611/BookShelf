@@ -60,7 +60,7 @@ public class BookSearchActivity extends AppCompatActivity {
                                         holder.getString("title"),
                                         holder.getString("author"),
                                         holder.getString("cover_url")));
-
+                                System.out.println("IN SEARCCH" + searchedBooksFound.getLibrary().get(i).getCoverURL());
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }

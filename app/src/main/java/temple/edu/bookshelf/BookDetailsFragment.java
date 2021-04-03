@@ -1,6 +1,8 @@
 package temple.edu.bookshelf;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,6 +13,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
+import com.squareup.picasso.Picasso;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ResourceBundle;
 
 import static android.graphics.Color.RED;
 
@@ -77,10 +94,14 @@ public class BookDetailsFragment extends Fragment {
         ImageView ivCover = v.findViewById(R.id.bookCoverImgView);
 
         tvTitle.setText(book.getTitle()); //given the book we selected
-        tvTitle.setTextSize(50);
+        tvTitle.setTextSize(30);
 
         tvAuthor.setText(book.getAuthor());
         tvAuthor.setTextSize(20);
+
+        System.out.println("HELLO" + book.getCoverURL());
+        Picasso.with(getActivity()).load(book.getCoverURL()).into(ivCover);
+
 
         return v;
     }

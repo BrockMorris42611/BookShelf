@@ -82,6 +82,8 @@ public class BookListFragment extends Fragment {
 
         lv = v.findViewById(R.id.bkListView);
 
+        System.out.println("LLLLLLLLLLLLLLLL"+BookListF.getLibrary().toString());
+
         adapter = new bookListViewAdapter(getActivity(), BookListF.getLibrary());
         lv.setAdapter(adapter);
 

@@ -35,7 +35,7 @@
         <ImageView
             android:id="@+id/bookCoverImgView"
             android:layout_width="213dp"
-            android:layout_height="221dp"
+            android:layout_height="225dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
