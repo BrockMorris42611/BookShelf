@@ -41,7 +41,7 @@ public class BookSearchActivity extends AppCompatActivity {
         searchButton = findViewById(R.id.buttonSearch);
         searchedBooksFound = new BookList(new ArrayList<>());
 
-        requestQueue = Volley.newRequestQueue(this);
+        requestQueue = Volley.newRequestQueue(this);//set up volley
 
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,13 +60,12 @@ public class BookSearchActivity extends AppCompatActivity {
                                         holder.getString("title"),
                                         holder.getString("author"),
                                         holder.getString("cover_url")));
-                                System.out.println("IN SEARCCH" + searchedBooksFound.getLibrary().get(i).getCoverURL());
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
                         }
                         Intent retIntent = new Intent();
-                        retIntent.putExtra("BOOK_LIST", searchedBooksFound);
+                        retIntent.putExtra("BOOK_LIST", searchedBooksFound); //send back the info with correct keys and codes
                         setResult(12, retIntent);
                         finish();
                     }

@@ -56,7 +56,6 @@ public class BookListFragment extends Fragment {
         Bundle args = new Bundle();
         args.putParcelable("BookInfo", BookListF); //instantiate with new BookList so we can display
         fragment.setArguments(args);
-        System.out.println("NEWINSTANCE HERE: " + BookListF.toString());
         return fragment;
     }
 
@@ -68,12 +67,6 @@ public class BookListFragment extends Fragment {
         }
     }
 
-    public void updateBLFrag(BookList updatedBookList){
-        BookListF = updatedBookList;
-        adapter.bookArrayList = BookListF.getLibrary();
-        adapter.notifyDataSetChanged();
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -82,7 +75,6 @@ public class BookListFragment extends Fragment {
 
         lv = v.findViewById(R.id.bkListView);
 
-        System.out.println("LLLLLLLLLLLLLLLL"+BookListF.getLibrary().toString());
 
         adapter = new bookListViewAdapter(getActivity(), BookListF.getLibrary());
         lv.setAdapter(adapter);

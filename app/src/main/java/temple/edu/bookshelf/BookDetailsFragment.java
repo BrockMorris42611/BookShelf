@@ -67,7 +67,7 @@ public class BookDetailsFragment extends Fragment {
     // TODO: Rename and change types and number of parameters
     public static BookDetailsFragment newInstance(Book book) {
         BookDetailsFragment fragment = new BookDetailsFragment();
-        Bundle args = new Bundle();
+        Bundle args = new Bundle(); //instantiate
         args.putParcelable(key, book);
         fragment.setArguments(args);
         return fragment;
@@ -99,8 +99,7 @@ public class BookDetailsFragment extends Fragment {
         tvAuthor.setText(book.getAuthor());
         tvAuthor.setTextSize(20);
 
-        System.out.println("HELLO" + book.getCoverURL());
-        Picasso.with(getActivity()).load(book.getCoverURL()).into(ivCover);
+        Picasso.with(getActivity()).load(book.getCoverURL()).into(ivCover); //load image via picasso retrieval
 
 
         return v;

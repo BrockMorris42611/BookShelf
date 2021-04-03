@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     @Override
     protected void onSaveInstanceState(Bundle outState) {
 
-        outState.putParcelable(restoreBookList, BookList_MainActivity);
+        outState.putParcelable(restoreBookList, BookList_MainActivity); //save for the changing of activities so we can remember what to display
         outState.putInt(restoreSelection, selectionOnResetForDetailFrag);
         super.onSaveInstanceState(outState);
     }
@@ -113,13 +113,13 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE && resultCode == 12 && data != null) {
+        if (requestCode == REQUEST_CODE && resultCode == 12 && data != null) { //check we are getting the right info back to the main activity form the secondary search
             Bundle b = data.getExtras();
-            if (b.getParcelable("BOOK_LIST") != null) {
+            if (b.getParcelable("BOOK_LIST") != null) { //make sure the key exists via key val pair
                 BookList_MainActivity = data.getParcelableExtra("BOOK_LIST");
                 BLF= BookListFragment.newInstance(BookList_MainActivity);
 
-                fragmentManager.beginTransaction()
+                fragmentManager.beginTransaction() //after we get the new selection make the fragment and replace the current one main_frame
                         .replace(R.id.main_frame, BLF, BookL_FragTag)
                         .setReorderingAllowed(true)
                         .addToBackStack(BookL_BackTag)
