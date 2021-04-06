@@ -3,6 +3,8 @@ package temple.edu.bookshelf;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 
 public class BookList implements Parcelable {
@@ -53,22 +55,47 @@ public class BookList implements Parcelable {
 class Book implements Parcelable{
 
     private int id;
+    private int duration;
     private String title;
     private String author;
     private String coverURL;
 
-    public Book(int id, String title, String author, String coverURL){
+    public Book(int id, int duration, String title, String author, String coverURL){
         this.id = id;
+        this.duration = duration;
         this.title = title;
         this.author = author;
         this.coverURL = coverURL;
     }
 
-    protected Book(Parcel in) {
+    protected Book(int duration, Parcel in) {
+        this.duration = duration;
         title = in.readString();
         author = in.readString();
         coverURL = in.readString();
         id = in.readInt();
+    }
+
+    protected Book(Parcel in) {
+        id = in.readInt();
+        duration = in.readInt();
+        title = in.readString();
+        author = in.readString();
+        coverURL = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeInt(duration);
+        dest.writeString(title);
+        dest.writeString(author);
+        dest.writeString(coverURL);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<Book> CREATOR = new Creator<Book>() {
@@ -99,20 +126,10 @@ class Book implements Parcelable{
     }
     public void setId(int id) { this.id = id; }
     public void setCoverURL(String coverURL) { this.coverURL = coverURL; }
+    public int getDuration() { return duration; }
+    public void setDuration(int duration) { this.duration = duration; }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(title);
-        dest.writeString(author);
-        dest.writeString(coverURL);
-        dest.writeInt(id);
-    }
-
+    @NotNull
     @Override
     public String toString() {
         return "Book{" +
@@ -122,4 +139,6 @@ class Book implements Parcelable{
                 ", coverURL='" + coverURL + '\'' +
                 '}';
     }
+
+
 }

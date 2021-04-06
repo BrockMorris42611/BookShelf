@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,7 +14,6 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
@@ -55,11 +53,12 @@ public class BookSearchActivity extends AppCompatActivity {
                             try {
                                 JSONObject holder = response.getJSONObject(i);
                                 searchedBooksFound.getLibrary()
-                                        .add(new Book(
-                                        Integer.parseInt(holder.getString("id")), //parse the array by iterating through the returned search matches
-                                        holder.getString("title"),
-                                        holder.getString("author"),
-                                        holder.getString("cover_url")));
+                                        .add(new Book(//parse the array by iterating through the returned search matches,
+                                        Integer.parseInt(holder.getString("id")),
+                                                holder.getInt("duration"),
+                                                holder.getString("title"),
+                                                holder.getString("author"),
+                                                holder.getString("cover_url")));
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
