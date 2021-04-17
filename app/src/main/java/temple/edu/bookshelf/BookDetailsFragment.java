@@ -2,6 +2,7 @@ package temple.edu.bookshelf;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -67,9 +68,11 @@ public class BookDetailsFragment extends Fragment {
     // TODO: Rename and change types and number of parameters
     public static BookDetailsFragment newInstance(Book book) {
         BookDetailsFragment fragment = new BookDetailsFragment();
-        Bundle args = new Bundle(); //instantiate
-        args.putParcelable(key, book);
-        fragment.setArguments(args);
+        if(book != null) {
+            Bundle args = new Bundle(); //instantiate
+            args.putParcelable(key, book);
+            fragment.setArguments(args);
+        }
         return fragment;
     }
 
@@ -86,8 +89,6 @@ public class BookDetailsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_book_details, container, false);
-
-        v.setBackgroundColor(RED);   // I want to show the difference between the two frames
 
         TextView tvTitle = v.findViewById(R.id.BookTitleTextView);
         TextView tvAuthor = v.findViewById(R.id.BookAuthorTextView);

@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:background="@color/purple_200">
 
     <FrameLayout
         android:id="@+id/controlFrame"
@@ -22,14 +23,13 @@
     <FrameLayout
         android:id="@+id/main_frame"
         android:layout_width="0dp"
-        android:layout_height="549dp"
+        android:layout_height="522dp"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/lookUpButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.099">
+        app:layout_constraintTop_toTopOf="parent">
 
     </FrameLayout>
 

@@ -6,46 +6,71 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.PersistableBundle;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
 import java.util.ArrayList;
 import edu.temple.audiobookplayer.AudiobookService;
+import edu.temple.audiobookplayer.AudiobookService.MediaControlBinder;
+import edu.temple.audiobookplayer.AudiobookService.BookProgress;
 
-public class MainActivity extends AppCompatActivity implements BookListFragment.BookListFragmentInterface, BookDetailsFragment.BookDetailsFragmentInterface {
+public class MainActivity extends AppCompatActivity implements BookListFragment.BookListFragmentInterface, BookDetailsFragment.BookDetailsFragmentInterface, ControlFragment.ControlFragmentInterface {
 
-    BookList BookList_MainActivity;
+    BookList BookList_MainActivity = new BookList(new ArrayList<Book>());
     String restoreBookList = "RESTORE_LIST";
+    String restorePointAsOfAction = "RESTORE_TIME_STAMP";
+    String restoreBinaryAudioState = "RESTORE_PLAYING_OR_NOT";
 
     BookListFragment BLF;
     BookDetailsFragment BDF;
-    FragmentManager fragmentManager;
+    ControlFragment BCF;
+    FragmentManager fragmentManager = getSupportFragmentManager();
+
+    BookProgress bookProgressMessage;
+    MediaControlBinder MCbinder;
+    boolean connected = false;
+    int point_asof_action = 0;
+    boolean isPlaying = false;
+    boolean ready = false;
+
+    ServiceConnection serviceConnection;
 
     boolean split; //what viewing mode are we in?
 
     int selectionOnResetForDetailFrag; //hold our selection in case of context switch
     String restoreSelection = "RESTORE_SELEC";
+
+
+
     int REQUEST_CODE = 1;
 
     String BookL_FragTag = "BLF"; String BookL_BackTag = "ListB";
     String BookD_FragTag = "BDF"; String BookD_BackTag = "DetailB";
+    String BookC_FragTag = "BCF"; String BookC_BackTag = "ControlB";
+    String LOG_TAG = ">>>>>>>>>>>>>>>>";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        BCF = ControlFragment.newInstance();
+        fragmentManager.beginTransaction().add(R.id.controlFrame, BCF, BookC_FragTag).setReorderingAllowed(true).addToBackStack(BookC_BackTag).commit();
+
+
         split = findViewById(R.id.detail_frame)!=null; //true when we can find the view(meaning we are in portrait) or false when we cant find the view(landscape or large)
         Button start_Search = findViewById(R.id.lookUpButton);
 
-
-        fragmentManager = getSupportFragmentManager();
-
         if(savedInstanceState==null) { //This is to verify that the fragment is added only once when the activity is created
-            BookList_MainActivity = new BookList(new ArrayList<Book>());
             BLF = BookListFragment.newInstance(BookList_MainActivity);
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction
@@ -54,10 +79,16 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
                     .addToBackStack(BookL_BackTag)
                     .commit();
         } else{ //if we are operating on a savedInstance that isnt null (i.e. context switch) then pop the back stack for the name ands see if exists
+            ready = false;
             selectionOnResetForDetailFrag = savedInstanceState.getInt(restoreSelection,0);
             BookList_MainActivity = savedInstanceState.getParcelable(restoreBookList);
+
+            BCF.updateSelection(BookList_MainActivity.getLibrary().get(selectionOnResetForDetailFrag));
+            isPlaying = savedInstanceState.getBoolean(restoreBinaryAudioState);
+            point_asof_action = savedInstanceState.getInt(restorePointAsOfAction);
+
             boolean pop = fragmentManager.popBackStackImmediate(BookD_BackTag, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            if(pop){ //if the frament type did exist then keep it but now load it into the main_fram frameview
+            if(pop){ //if the frament type did exist then keep it but now load it into the main_frame frameview
 
                 int frame_based_on_split = R.id.main_frame;//when we are in portrait single view DEFAULT VALUE
                 if(split) //if we arent in the single screen then move the new selection to the other frame
@@ -87,10 +118,58 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        Intent intentForBind = new Intent(MainActivity.this, AudiobookService.class);
+
+        bindService(intentForBind, serviceConnection = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder binder) {
+
+                MCbinder = (MediaControlBinder) binder;
+
+                connected = true;
+                if (connected) {
+                    MCbinder.setProgressHandler(new Handler(new Handler.Callback() {
+                        @Override
+                        public boolean handleMessage(@NonNull Message msg) {
+                            try {
+                                bookProgressMessage = (BookProgress) msg.obj;
+                                Log.d("Progress via Handler >", String.valueOf(bookProgressMessage.getProgress()));
+                                BCF.updateRealTime(bookProgressMessage.getProgress());
+                                point_asof_action = bookProgressMessage.getProgress();
+                                return true;
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                return false;
+                            }
+                        }
+                    }));
+                    Log.d(LOG_TAG, "onServiceConnected");
+                }
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+                connected = false;
+                Log.d(LOG_TAG, "onServiceDisconnected");
+            }
+        }, Context.BIND_AUTO_CREATE);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        connected = false;
+    }
+
+    @Override
     protected void onSaveInstanceState(Bundle outState) {
 
         outState.putParcelable(restoreBookList, BookList_MainActivity); //save for the changing of activities so we can remember what to display
         outState.putInt(restoreSelection, selectionOnResetForDetailFrag);
+        outState.putInt(restorePointAsOfAction, point_asof_action);
+        outState.putBoolean(restoreBinaryAudioState, MCbinder.isPlaying());
         super.onSaveInstanceState(outState);
     }
 
@@ -109,6 +188,8 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
                 .setReorderingAllowed(true)
                 .addToBackStack(BookD_BackTag)
                 .commit();
+        BCF.updateSelection(BookList_MainActivity.getLibrary().get(sel));
+        //MCbinder.stop();
     }
 
     @Override
@@ -125,14 +206,38 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
                         .setReorderingAllowed(true)
                         .addToBackStack(BookL_BackTag)
                         .commit();
-
             } else {
                 System.out.println(data.toString());
             }
         }
     }
     @Override
-    public void display(Book b) {
+    public void display(Book b) {}
 
+    @Override
+    public void playBookOnClick(int start_point) {
+        //isPlaying = true;
+        point_asof_action = start_point;
+        MCbinder.play(BookList_MainActivity.getLibrary().get(selectionOnResetForDetailFrag).getId(), point_asof_action);
+    }
+    @Override
+    public void seekToBookOnClick(int goto_point){
+        MCbinder.seekTo(goto_point);
+    }
+    @Override
+    public void pauseBookOnClick() {
+        if(MCbinder.isPlaying()) {
+            MCbinder.pause();
+            //isPlaying = false;
+        }else {
+            MCbinder.play(BookList_MainActivity.getLibrary().get(selectionOnResetForDetailFrag).getId(), point_asof_action);
+            //isPlaying = true;
+        }
+    }
+    @Override
+    public void stopBookOnClick() {
+        MCbinder.stop();
+        point_asof_action = 0;
+        isPlaying = false;
     }
 }

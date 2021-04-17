@@ -79,8 +79,9 @@ public class BookListFragment extends Fragment {
         lv.setOnItemClickListener(new ListView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                BookListF.setChosenBook(BookListF.getLibrary().get(position));
                 tester.sendSelectionBack(position); //when the button is pressed call the activity implemented function sending
-                                                    // the poition clicked back
+                                                    // the position clicked back
             }
         });
 
