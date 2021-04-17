@@ -220,12 +220,9 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
         point_asof_action = start_point;
         MCbinder.play(BookList_MainActivity.getLibrary().get(selectionOnResetForDetailFrag).getId(), point_asof_action);
     }
+
     @Override
-    public void seekToBookOnClick(int goto_point){
-        MCbinder.seekTo(goto_point);
-    }
-    @Override
-    public void pauseBookOnClick() {
+    public void pauseBookOnClick(int pause_point) {
         if(MCbinder.isPlaying()) {
             MCbinder.pause();
             //isPlaying = false;
@@ -233,6 +230,11 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
             MCbinder.play(BookList_MainActivity.getLibrary().get(selectionOnResetForDetailFrag).getId(), point_asof_action);
             //isPlaying = true;
         }
+    }
+
+    @Override
+    public void seekToBookOnClick(int goto_point){
+        MCbinder.seekTo(goto_point);
     }
     @Override
     public void stopBookOnClick() {
